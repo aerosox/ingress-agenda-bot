@@ -2,11 +2,9 @@ const MongoClient = require('mongodb').MongoClient
 const Agenda = require('agenda')
 const Telegraf = require('telegraf')
 const {Extra, Markup} = require('telegraf')
+const config = require('./config.js')
 
-var mongoUrl = "mongodb://127.0.0.1/agenda"
-var botToken = 'telegram-token'
-
-const bot = new Telegraf(botToken)
+const bot = new Telegraf(config.telegramToken)
 
 // Hackish way for padding 0s. pad(3, 1) -> "001"
 function pad(length, number) {
@@ -34,7 +32,7 @@ var updateSojournerAlert = (db, userid, date) => {
   )
 }
 
-MongoClient.connect(mongoUrl, (err, db) => {
+MongoClient.connect(config.mongoUrl, (err, db) => {
 
 if (err) return console.error(err)
 console.log("Connected to MongoDB :)")
@@ -51,14 +49,14 @@ bot.command('start', (ctx) => {
 bot.command('hack', (ctx) => {
   let d = new Date()
   updateHack(db, ctx.message.from.id, d)
-  ctx.reply(`<b>[${d.getHours()}:${d.getMinutes()}]</b>\nHack confirmed.`, {parse_mode: 'html'})
+  ctx.reply(`<b>[${pad(2, d.getHours())}:${pad(2, d.getMinutes())}]</b>\nHack confirmed.`, {parse_mode: 'html'})
 })
 
 bot.action('hack', (ctx) => {
   let d = new Date()
   updateHack(db, ctx.from.id, d)
   ctx.answerCallbackQuery(
-    `[ ${d.getHours()}:${d.getMinutes()} ]\nHack confirmed.`, '', true)
+    `[ ${pad(2, d.getHours())}:${pad(2, d.getMinutes())} ]\nHack confirmed.`, '', true)
 })
 
 var agenda = new Agenda({mongo: db})
