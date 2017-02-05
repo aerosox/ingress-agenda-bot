@@ -4,7 +4,7 @@ const Telegraf = require('telegraf')
 const {Extra, Markup} = require('telegraf')
 
 var mongoUrl = "mongodb://127.0.0.1/agenda"
-var botToken = '283614754:AAHWxEc8T3CDvSI5ytiCvWC50GZ2pGjqgA4'
+var botToken = 'telegram-token'
 
 const bot = new Telegraf(botToken)
 
